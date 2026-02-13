@@ -2,17 +2,14 @@ import os
 import requests
 from flask import Flask, request
 from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    ContextTypes,
-)
+from telegram.ext import Application, CommandHandler, ContextTypes
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 API_URL = "https://fast-dev-apis.vercel.app/shayari"
 
 app = Flask(__name__)
-telegram_app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+telegram_app = Application.builder().token(BOT_TOKEN).build()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -34,9 +31,7 @@ async def shayari(update: Update, context: ContextTypes.DEFAULT_TYPE):
             or "❌ Shayari nahi mil payi"
         )
 
-        await update.message.reply_text(
-            f"✨ Shayari ✨\n\n{shayari_text}"
-        )
+        await update.message.reply_text(f"✨ Shayari ✨\n\n{shayari_text}")
 
     except Exception:
         await update.message.reply_text(
@@ -63,7 +58,8 @@ async def webhook():
 if __name__ == "__main__":
     telegram_app.initialize()
     telegram_app.bot.set_webhook(
-        url=f"https://YOUR-RENDER-URL.onrender.com/{BOT_TOKEN}"
+        url=f"https://YOUR-APP-NAME.onrender.com/{BOT_TOKEN}"
     )
+
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
