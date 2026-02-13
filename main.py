@@ -58,7 +58,7 @@ async def webhook():
 if __name__ == "__main__":
     telegram_app.initialize()
     telegram_app.bot.set_webhook(
-        url=f"https://YOUR-APP-NAME.onrender.com/{BOT_TOKEN}"
+        url=f"https://madara-shayeri.onrender.com/{BOT_TOKEN}"
     )
 
     port = int(os.environ.get("PORT", 10000))
