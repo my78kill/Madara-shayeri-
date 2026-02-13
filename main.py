@@ -4,7 +4,7 @@ from flask import Flask, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
+BOT_TOKEN = os.environ["BOT_TOKEN"]
 API_URL = "https://fast-dev-apis.vercel.app/shayari"
 
 app = Flask(__name__)
@@ -21,22 +21,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def shayari(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        response = requests.get(API_URL, timeout=10)
-        data = response.json()
+        r = requests.get(API_URL, timeout=10)
+        data = r.json()
 
-        shayari_text = (
+        text = (
             data.get("shayari")
             or data.get("data")
             or data.get("quote")
             or "❌ Shayari nahi mil payi"
         )
 
-        await update.message.reply_text(f"✨ Shayari ✨\n\n{shayari_text}")
-
+        await update.message.reply_text(f"✨ Shayari ✨\n\n{text}")
     except Exception:
-        await update.message.reply_text(
-            "⚠️ API error aa gaya, baad me try karo."
-        )
+        await update.message.reply_text("⚠️ API error aa gaya.")
 
 
 telegram_app.add_handler(CommandHandler("start", start))
@@ -45,7 +42,7 @@ telegram_app.add_handler(CommandHandler("shayari", shayari))
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Shayari Bot Running Successfully 🚀"
+    return "Bot Running OK 🚀"
 
 
 @app.route(f"/{BOT_TOKEN}", methods=["POST"])
@@ -57,8 +54,9 @@ async def webhook():
 
 if __name__ == "__main__":
     telegram_app.initialize()
+
     telegram_app.bot.set_webhook(
-        url=f"https://madara-shayeri.onrender.com/{BOT_TOKEN}"
+        url=f"https://YOUR-SERVICE.onrender.com/{BOT_TOKEN}"
     )
 
     port = int(os.environ.get("PORT", 10000))
